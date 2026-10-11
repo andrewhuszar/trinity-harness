@@ -19,10 +19,12 @@ Az agent harness az a munkakörnyezet, amelyben AI-agentek és emberi csapattago
 ## Telepítés
 
 ```bash
-claude plugin marketplace add <a trinity-harness repó útvonala vagy GitHub-címe>
+claude plugin marketplace add andrewhuszar/trinity-harness
 claude plugin install harness-ba@trinity-harness    # BA és üzleti szerep
 claude plugin install harness-dev@trinity-harness   # fejlesztői szerep
 ```
+
+A harness fejlesztésekor a marketplace a helyi checkout útvonaláról is felvehető, így a módosítás a `claude plugin marketplace update trinity-harness` után azonnal kipróbálható.
 
 Egy új repóban a `/harness-ba:init` (tervezési tér) vagy a `/harness-dev:init` (termékrepó, teljes vagy gyorsindító workflow-val) hozza létre a `.harness/config.json` konfigurációt és az alapszerkezetet. A következő teendőt a `/harness-ba:next`, illetve a `/harness-dev:next` mutatja.
 
@@ -31,5 +33,5 @@ A közös szkriptmodul forrása a `shared/harness_core.py`; módosítás után a
 ## Kapcsolódó repók
 
 - `trinity`: a framework, a framework-skillekkel és az arany példákkal.
-- `proto-planning`: prototípus tervezési tér.
-- `proto-product`: prototípus termékrepó, a Trinity sablonmásolatából.
+- [`trn-proto-planning`](https://github.com/andrewhuszar/trn-proto-planning): prototípus tervezési tér.
+- [`trn-proto-monorepo`](https://github.com/andrewhuszar/trn-proto-monorepo): prototípus termékrepó, a Trinity sablonmásolatából.

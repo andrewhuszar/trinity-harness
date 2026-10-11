@@ -51,8 +51,8 @@ Példa:
 
 ## Elfogadási feltételek
 
-**1** Első ellenőrizhető, eredményorientált feltétel.
-**2** Második feltétel.
+- **1** Első ellenőrizhető, eredményorientált feltétel.
+- **2** Második feltétel.
 
 ## Megvalósítási terv
 
@@ -65,7 +65,7 @@ Példa:
 
 Egy story jellemzően 3–7 elfogadási feltételt tartalmaz. Minden feltétel explicit, tömör és ellenőrizhető, töltelék nélkül.
 
-- Az azonosító a sor elején álló, félkövér szöveges címke, nem markdown-listaszám: `**1**`, `**2**`, alpont esetén `**2.1**`.
+- Minden feltétel külön felsorolásjeles (`-`) sor, amely félkövér szöveges azonosítóval kezdődik: `- **1**`, `- **2**`, alpont esetén `- **2.1**`. Számozott markdown-lista nem használható, mert a megjelenítő újraszámozza.
 - A pont hierarchiát jelöl: `**2.1**` a 2. feltétel részelvárása vagy eredményága.
 - Utólag beszúrt feltétel az előző elem után `-xN` utótagot kap: `**2.1-x1**`, `**2.1-x2**`.
 - Módosításkor az eredeti szöveg áthúzva, dátummal megmarad, az új változat a következő betűt kapja: `**2.2**` → `**2.2a**` → `**2.2b**`.
@@ -73,10 +73,10 @@ Egy story jellemzően 3–7 elfogadási feltételt tartalmaz. Minden feltétel e
 - Azonosító nem számozódik át és nem használható újra; a teljes hivatkozás `HRN-003#2.2a`.
 
 ```md
-**1** A marketplace-ből a `harness-ba` és a `harness-dev` plugin külön telepíthető.
-**2** ~~A `/next` a következő storyt mutatja.~~ (2026-11-01)
-**2a** A `/next` a konfiguráció és az állapotok alapján a következő teendőt mutatja.
-**2-x1** Üres tervezési térben a `/next` a domain felvételét javasolja.
+- **1** A marketplace-ből a `harness-ba` és a `harness-dev` plugin külön telepíthető.
+- **2** ~~A `/next` a következő storyt mutatja.~~ (2026-11-01)
+- **2a** A `/next` a konfiguráció és az állapotok alapján a következő teendőt mutatja.
+- **2-x1** Üres tervezési térben a `/next` a domain felvételét javasolja.
 ```
 
 ### Opcionális story-rész

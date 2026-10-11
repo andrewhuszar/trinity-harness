@@ -35,4 +35,4 @@ A storyk azonosítója `<PREFIX>-<n>`.
 
 ## Elfogadási feltételek
 
-Az elfogadási feltétel explicit, tömör, a domain szavaival és konkrét értékekkel. Azonosítója a sor elején álló félkövér címke: a pont hierarchiát (`**2.1**`), a `-xN` utólag beszúrt testvért (`**2.1-x1**`), a betű módosítást (`**2.2a**`) jelöl. Módosításkor az eredeti szöveg áthúzva, dátummal marad; azonosító nem számozódik át és nem használható újra.
+Az elfogadási feltétel explicit, tömör, a domain szavaival és konkrét értékekkel. Minden feltétel külön felsorolásjeles (`-`) sor, félkövér azonosítóval kezdve; számozott markdown-lista nem használható. Az azonosító a pont hierarchiát (`**2.1**`), a `-xN` utólag beszúrt testvért (`**2.1-x1**`), a betű módosítást (`**2.2a**`) jelöl. Módosításkor az eredeti szöveg áthúzva, dátummal marad; azonosító nem számozódik át és nem használható újra.

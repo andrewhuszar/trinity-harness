@@ -6,10 +6,10 @@ Derüljön ki, milyen formában és mennyire automatizáltan adható ki egy elfo
 
 ## Elfogadási feltételek
 
-**1** Dokumentált, kipróbált út egy képernyő exportjára statikus React kódként, amely a `@trinity/ui` komponenseit, tokenjeit és Tailwind classait használja.
-**2** Kipróbált út a `@trinity/ui` legalább két komponensének szinkronjára a Claude Design design-system projektjébe.
-**3** Döntés arról, hogy az export kézi, félautomatikus vagy automatikus lépés; a döntés a technikai specifikációba vagy ADR-be kerül.
-**4** A specifikáció design-szakaszai az eredményhez igazodnak, vagy a szükséges módosítás új storyként rögzített.
+- **1** Dokumentált, kipróbált út egy képernyő exportjára statikus React kódként, amely a `@trinity/ui` komponenseit, tokenjeit és Tailwind classait használja.
+- **2** Kipróbált út a `@trinity/ui` legalább két komponensének szinkronjára a Claude Design design-system projektjébe.
+- **3** Döntés arról, hogy az export kézi, félautomatikus vagy automatikus lépés; a döntés a technikai specifikációba vagy ADR-be kerül.
+- **4** A specifikáció design-szakaszai az eredményhez igazodnak, vagy a szükséges módosítás új storyként rögzített.
 
 ## Megvalósítási terv
 
