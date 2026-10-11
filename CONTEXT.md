@@ -22,7 +22,7 @@ Szerepenként (`harness-ba`, `harness-dev`) globálisan telepített, verziózott
 _Kerülendő_: kit, projektskill
 
 **Harness-konfiguráció**:
-A projektben tárolt beállítás (story-prefix, repócímek, struktúra), amely alapján a harness-plugin az adott projektben működik.
+A projekt `.harness/config.json` fájljában tárolt beállítás (szerep, story-prefix, kapcsolódó repó, workflow), amely alapján a harness-plugin az adott projektben működik.
 
 **Framework-skill**:
 A Trinity frameworkkel együtt változó és terjedő eszközskill, generátor vagy arany példa.

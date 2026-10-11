@@ -42,7 +42,7 @@ A harness-szolgáltatás a Trinity backend mintáira épülhet (NestJS, CQRS, ta
 | Tervezési tér | Üzleti artefaktumok és harness-konfiguráció | — |
 | Termékrepó | Termékkód, technikai artefaktumok és harness-konfiguráció | — |
 
-A projekt csak a harness-konfigurációt (story-prefix, repócímek, struktúra) tartalmazza; a skilleket, a parancsokat és a hookokat a pluginok adják.
+A projekt csak a harness-konfigurációt tartalmazza a `.harness/config.json` fájlban (séma- és struktúraverzió, szerep, projektnév, story-prefix, kapcsolódó repó, workflow, a létrehozó plugin verziója); a skilleket, a parancsokat és a hookokat a pluginok adják. A konfigurációt a `/harness-ba:init`, illetve a `/harness-dev:init` hozza létre, és a pluginfrissítés nem módosítja.
 
 ### Tervezési tér (GitHub)
 
@@ -58,7 +58,8 @@ epics/<EPIC-ID>/
   design/<SCR-ID>@<n>/            # design-pillanatkép: képernyőkód, képernyőképek, meta.yaml
   stories/<STORY-ID>.md           # cél, elfogadási feltételek, állapot
   test-scenarios/<STORY-ID>.md    # jóváhagyott tesztforgatókönyvek
-.claude/                          # harness-konfiguráció és projektinstrukciók; a skilleket a harness-ba plugin adja
+.harness/config.json              # harness-konfiguráció
+AGENTS.md                         # projektinstrukciók; a skilleket a harness-ba plugin adja
 ```
 
 - A `main` védett, közvetlen push nincs. A változás draft branchről (`draft/<epic>/<ba>`) publikálási PR-ral érkezik.
@@ -67,6 +68,7 @@ epics/<EPIC-ID>/
 ### Termékrepó (Azure DevOps)
 
 ```
+.harness/config.json              # harness-konfiguráció
 planning/                         # tervezési másolatok, csak a harness írja
   domains/… epics/…               # a tervezési tér tükre, forrás-SHA-val
 docs/epics/<EPIC-ID>/

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "trinity-harness",
+  "description": "Trinity agent harness: tervezési és fejlesztési workflow AI-agentek és emberi csapattagok közös munkájához",
+  "owner": {
+    "name": "Andras Huszar",
+    "email": "huszarandris@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "harness-ba",
+      "description": "BA- és üzleti szerep: tervezési tér bootstrap, harness-konfiguráció és a következő teendő (/next)",
+      "source": "./plugins/harness-ba",
+      "category": "productivity"
+    },
+    {
+      "name": "harness-dev",
+      "description": "Fejlesztői szerep: termékrepó bootstrap, harness-konfiguráció, gyorsindító workflow-sablon és a következő teendő (/next)",
+      "source": "./plugins/harness-dev",
+      "category": "development"
+    }
+  ]
+}

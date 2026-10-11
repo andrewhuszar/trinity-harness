@@ -17,7 +17,15 @@ A `harness-ba` és a `harness-dev` plugin egy marketplace-ből globálisan telep
 
 ## Megvalósítási terv
 
-- [ ] Marketplace és a két plugin váza.
-- [ ] Harness-konfiguráció formátuma és bootstrap parancs.
-- [ ] `/next` alapváltozata.
-- [ ] Telepítés és frissítés kipróbálása a prototípus repókban.
+- [x] Marketplace és a két plugin váza.
+- [x] Harness-konfiguráció formátuma (`.harness/config.json`) és bootstrap parancs.
+- [x] `/next` alapváltozata.
+- [x] Telepítés és frissítés kipróbálása eldobható repókban.
+- [ ] A prototípus repók bootstrapolása a telepített pluginokkal.
+
+## Ellenőrzés
+
+- `claude plugin validate`: a marketplace és mindkét plugin manifestje érvényes.
+- Szkriptek eldobható repókban: bootstrap konfiguráció nélkül, hibás prefix elutasítása, meglévő konfiguráció védelme, `/next` üres tervezési térben (domain felvétele), prioritás (BA-elfogadás a pontosítás előtt), ismeretlen állapot jelzése, szerepváltás, teljes és gyorsindító fejlesztői workflow.
+- Helyi marketplace-ről `local` scope-pal telepítve mindkét plugin; a verzió (0.1.0) a `claude plugin list` kimenetében látható; a `/harness-ba:next` és a `/harness-ba:init` headless munkamenetben a telepített pluginból lefutott.
+- 0.1.0 → 0.1.1 frissítés után a plugin az új verziót jelenti, a `.harness/config.json` bájtra azonos maradt.

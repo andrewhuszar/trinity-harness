@@ -1,0 +1,9 @@
+{
+  "name": "harness-dev",
+  "description": "Trinity harness – fejlesztői szerep",
+  "version": "0.1.0",
+  "author": {
+    "name": "Andras Huszar",
+    "email": "huszarandris@gmail.com"
+  }
+}

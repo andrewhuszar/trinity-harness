@@ -1,0 +1,9 @@
+{
+  "name": "harness-ba",
+  "description": "Trinity harness – BA- és üzleti szerep",
+  "version": "0.1.0",
+  "author": {
+    "name": "Andras Huszar",
+    "email": "huszarandris@gmail.com"
+  }
+}
