@@ -17,6 +17,6 @@ A jelenlegi munkakönyvtárat harness-tervezési térként készíted elő. Megl
    ```
 
 3. Az eredmény JSON. Ha `ok` hamis, mondd el a hibát egy mondatban, és ne próbáld megkerülni. Ha igaz, sorold fel röviden a létrehozott (`created`) és a meglévő, érintetlenül hagyott (`skipped`) fájlokat, a plugin nevével és verziójával.
-4. Végül futtasd a `/harness-ba:next` parancsot, és mutasd meg az első teendőt.
+4. Végül futtasd a `/harness-ba:next` parancsot, és mutasd meg az első teendőt. Ne kezdj bele, ne tegyél fel kérdést a teendőről, és ne írj le olyan lépést, amely nem szerepel a szkript eredményében.
 
 Git-műveletet (commit, push) ne végezz. Emojit ne használj.

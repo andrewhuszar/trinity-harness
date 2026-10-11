@@ -21,7 +21,7 @@ A `harness-ba` és a `harness-dev` plugin egy marketplace-ből globálisan telep
 - [x] Harness-konfiguráció formátuma (`.harness/config.json`) és bootstrap parancs.
 - [x] `/next` alapváltozata.
 - [x] Telepítés és frissítés kipróbálása eldobható repókban.
-- [ ] A prototípus repók bootstrapolása a telepített pluginokkal.
+- [x] A prototípus repók bootstrapolása a telepített pluginokkal.
 
 ## Ellenőrzés
 
@@ -29,3 +29,4 @@ A `harness-ba` és a `harness-dev` plugin egy marketplace-ből globálisan telep
 - Szkriptek eldobható repókban: bootstrap konfiguráció nélkül, hibás prefix elutasítása, meglévő konfiguráció védelme, `/next` üres tervezési térben (domain felvétele), prioritás (BA-elfogadás a pontosítás előtt), ismeretlen állapot jelzése, szerepváltás, teljes és gyorsindító fejlesztői workflow.
 - Helyi marketplace-ről `local` scope-pal telepítve mindkét plugin; a verzió (0.1.0) a `claude plugin list` kimenetében látható; a `/harness-ba:next` és a `/harness-ba:init` headless munkamenetben a telepített pluginból lefutott.
 - 0.1.0 → 0.1.1 frissítés után a plugin az új verziót jelenti, a `.harness/config.json` bájtra azonos maradt.
+- A `proto-planning` (`harness-ba`) és a `proto-product` (`harness-dev`, `harness` workflow) `project` scope-pal telepített pluginnal, `PRT` prefixszel bootstrapolva; a `/harness-dev:next` a 0.1.1 verzióval csak a szkript eredményét mutatja be.

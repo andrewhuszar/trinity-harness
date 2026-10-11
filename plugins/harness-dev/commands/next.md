@@ -16,4 +16,4 @@ Az eredmény JSON. Válaszolj magyarul, röviden, emoji nélkül:
 3. **Figyelmeztetés:** a `warnings` elemei, ha vannak.
 4. Egy sorban a plugin neve és verziója (`plugin`).
 
-Ajánld fel, hogy belekezdesz a következő teendőbe, de ne kezdd el kérés nélkül. Az eredményt ne egészítsd ki saját feltételezéssel: ha az állapot nem egyértelmű, mondd ki.
+Ajánld fel egy mondatban, hogy belekezdesz a következő teendőbe, de ne kezdd el és ne kérdezz rá a részleteire kérés nélkül. Csak azt írd le, ami a szkript eredményében szerepel; a folyamatról, a szinkronról vagy más repóról ne tegyél hozzá saját magyarázatot vagy lépést. Ha az állapot nem egyértelmű, mondd ki.
