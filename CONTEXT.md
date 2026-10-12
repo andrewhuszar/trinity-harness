@@ -338,6 +338,10 @@ Szerveroldali agent, amely a beküldött változást ellenőrzi, a hibát a bek�
 **Harness-szolgáltatás**:
 Az Azure-on futó szerveroldali komponens, amely az állapotgépet, a kapukat, a tervezési szinkront, a stacked PR-automatizálást, az agentindítást és a tesztkörnyezetek életciklusát kezeli, platformadaptereken keresztül.
 
+**Közös csatorna**:
+Az online felület mindenki által látható nézete a harness eseménynaplójából: ki min dolgozik, ki kinek mit adott át, ki mire vár és mi blokkol.
+_Kerülendő_: `/next` (az a szereplő saját következő teendője)
+
 **Story-szerkesztő felület**:
 Online alkalmazás, ahol a BA a beküldött változás eredményét látja, kérdésekre válaszol és a változást publikálja.
 
