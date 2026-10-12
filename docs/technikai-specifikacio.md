@@ -42,7 +42,20 @@ A harness-szolgáltatás a Trinity backend mintáira épülhet (NestJS, CQRS, ta
 | Tervezési tér | Üzleti artefaktumok és harness-konfiguráció | — |
 | Termékrepó | Termékkód, technikai artefaktumok és harness-konfiguráció | — |
 
-A projekt csak a harness-konfigurációt tartalmazza a `.harness/config.json` fájlban (séma- és struktúraverzió, szerep, projektnév, story-prefix, kapcsolódó repó, workflow, a létrehozó plugin verziója); a skilleket, a parancsokat és a hookokat a pluginok adják. A konfigurációt a `/harness-ba:init`, illetve a `/harness-dev:init` hozza létre, és a pluginfrissítés nem módosítja.
+A projekt csak a harness-konfigurációt tartalmazza a `.harness/config.json` fájlban (séma- és struktúraverzió, szerep, projektnév, story-prefix, kapcsolódó repó, workflow, a létrehozó plugin verziója, döntési jogkörök, támogatási kapcsolat); a skilleket, a parancsokat és a hookokat a pluginok adják. A konfigurációt a `/harness-ba:init`, illetve a `/harness-dev:init` hozza létre, és a pluginfrissítés nem módosítja.
+
+A döntési jogkörök a konfigurációban szerepelnek: a PO és helyettese, valamint az epicenkénti delegációk. A kapuk ebből döntik el, hogy az átmenetet kérő szereplő jogosult-e rá; ha nem, a harness a döntéshozónak jelzi.
+
+```json
+{
+  "roles": {
+    "productOwner": "kovacs.anna",
+    "productOwnerDeputy": "nagy.peter",
+    "delegations": [{ "epic": "EP-001", "to": "szabo.eva", "decisions": ["Pontosítva", "story-elfogadás"] }]
+  },
+  "support": "harness-support csatorna"
+}
+```
 
 ### Tervezési tér (GitHub)
 
@@ -50,12 +63,15 @@ A projekt csak a harness-konfigurációt tartalmazza a `.harness/config.json` f�
 domains/<domain>/
   context.md                      # üzleti szótár, határok (Big Picture)
   event-storming/                 # workshop-anyagok és feldolgozott eredmény
+  kozos-szabalyok.md              # jogosultságok, adatfogalmak, külső rendszerkapcsolatok
 epics/<EPIC-ID>/
-  epic.md                         # állapot, sávstátuszok, hivatkozások
-  uzleti-igeny.md
+  epic.md                         # állapot, sávstátuszok, bevezetési felelős, hivatkozások
+  uzleti-igeny.md                 # forrásjelölt állítások, jelenlegi és kívánt folyamat
   folyamatmodell.md               # azonosítós folyamatelemek
+  minosegi-elvarasok.md           # az epic mérhető minőségi elvárásai
   funkcionalis-specifikacio.md
-  design/<SCR-ID>@<n>/            # design-pillanatkép: képernyőkód, képernyőképek, meta.yaml
+  dontesnaplo.md                  # döntések, verzióval, indokkal és fennmaradó kockázattal
+  design/<SCR-ID>@<n>/            # design-pillanatkép: képernyőkód, állapotok, képernyőképek, meta.yaml
   stories/<STORY-ID>.md           # cél, elfogadási feltételek, állapot
   test-scenarios/<STORY-ID>.md    # jóváhagyott tesztforgatókönyvek
 .harness/config.json              # harness-konfiguráció
@@ -89,6 +105,9 @@ test-data/deltas/                 # tesztadat-delták
 | Story | `<PROJEKT>-<n>`, például `TRN-045` | tervezési tér |
 | Task | `<STORY-ID>-T<n>` | story |
 | Folyamatelem | `<DOMAIN>:<TÍPUS>-<n>`, például `DOC:POL-4`; típus: `ACT`, `CMD`, `EVT`, `POL`, `RM`, `RULE`, `EXT` | domain |
+| Közös szabály | `<DOMAIN>:PERM-<n>` (jogosultság), `<DOMAIN>:DATA-<n>` (adatfogalom); a külső rendszerkapcsolat a folyamatelem `EXT` azonosítóját használja | domain |
+| Minőségi elvárás | `<EPIC-ID>:NFR-<n>` | epic |
+| Döntés | `<EPIC-ID>:DEC-<n>` | epic |
 | Képernyőverzió | `SCR-<n>@<verzió>`, a forráskoncepcióval (`← C1`) | tervezési tér |
 | Elfogadási feltétel | `<STORY-ID>#<azonosító>`, például `TRN-045#2.1-x1`, `TRN-045#2.2a` | story |
 | Artefaktumverzió | a tervezési tér commit-SHA-ja, amelyben az artefaktum utoljára változott | — |
@@ -105,7 +124,9 @@ references:
   stories: [TRN-045@9ab03d2]
 ```
 
-- **AC-azonosító szabályai:** explicit szöveges címke; pont: hierarchia; `-xN`: beszúrt testvér; betű: módosítás; nincs átszámozás és újrafelhasználás. A determinisztikus kapu az előző story-verzióval összevetve ellenőrzi.
+- **AC-azonosító szabályai:** felsorolásjeles sor félkövér szöveges címkével; pont: hierarchia; `-xN`: beszúrt testvér; betű: minden szövegváltozás; nincs átszámozás és újrafelhasználás. A determinisztikus kapu az előző story-verzióval összevetve ellenőrzi. Az ellenőrzési mód a sor végén: alapértelmezés e2e, egyébként `[integrációs]`, `[kézi]` vagy `[monitorozás]`.
+- **Forrásjelölés:** az üzleti igény állításai `[megerősített: <forrás>]`, `[feltételezés]` vagy `[agentjavaslat]` jelölést kapnak; a scope-ot vagy megvalósíthatóságot eldöntő nyitott kérdés `[scope]` jelölést.
+- **Blokkolás:** az epic, story és task front mattere `blocked_reason`, `blocked_owner` és `blocked_until` mezőt kaphat; a jelző nem állapot, és bármely állapotban beállítható.
 
 ## Tervezési szinkron és eltérésdetektálás
 
@@ -119,7 +140,9 @@ references:
 5. Képernyőverzió-emelésnél a változás típusa szerint:
    - **megjelenítési pontosítás:** nem állít meg taskot, csak a `screen-version` ellenőrzés követeli meg, hogy a view a legfrissebb képernyőverzióra hivatkozzon;
    - **viselkedési változás:** a 4. pont szerint jár el.
-6. A termékrepó eseményei (PR nyitva, mergelve, pipeline-eredmény, telepítés) a tervezési térbe írt állapotváltozást váltanak ki; ezt csak a harness identitása commitolja.
+6. A termékrepó eseményei (task branch létrehozva, PR nyitva, mergelve, pipeline-eredmény, telepítés) a tervezési térbe írt állapotváltozást váltanak ki; ezt csak a harness identitása commitolja. A story az első task branch létrehozásakor lép `Fejlesztés alatt` állapotba.
+
+**Hatáslista publikálás előtt:** a feldolgozó agent a draft branch diffjéből meghatározza az érintett storykat, közös szabályokat, minőségi elvárásokat, képernyőket és teszteket (a hivatkozási gráf és az AC-címkék alapján), valamint a prioritásra és vállalásra gyakorolt hatást. Scope-változás esetén a publikálás a PO jóváhagyására vár.
 
 ## Kapuk
 
@@ -127,13 +150,16 @@ A determinisztikus ellenőrzések CI-ban és a harness magjában futnak, és blo
 
 | Átmenet | Determinisztikus | Szemantikus |
 |---|---|---|
-| Beküldés (minden push) | Struktúra, kötelező szakaszok, front matter, hivatkozott azonosítók létezése, AC-azonosító szabályai, állapotmezőt nem a harness írt | Szótár-ütközés, ellentmondás, kimaradt hibaút, homályos megfogalmazás |
-| `Vázlat` → `Pontosítva` | Az üzleti igény minden kötelező szakasza kitöltött; nincs megválaszolatlan és el nem halasztott kérdés; a folyamatelemek azonosítósak; nincs nyitott hotspot | Ütközés meglévő epickel vagy folyamatmodellel |
-| `Tervezés alatt` → `Bontva` | A funkcionális specifikáció csak létező folyamatelemekre és képernyőverziókra hivatkozik; UI-t érintő epicnél van elfogadott design; tervmegerősítési kapu zöld; minden storynak van legalább egy taskja és jóváhagyott tesztforgatókönyve; egy story legfeljebb kb. öt flow-lépést tartalmaz | A funkcionális specifikáció és a design egyezése; a storybontás szeletelése |
+| Beküldés (minden push) | Struktúra, kötelező szakaszok, front matter, hivatkozott azonosítók létezése, AC-azonosító szabályai, forrásjelölés, állapotmezőt nem a harness írt | Szótár-ütközés, ellentmondás, kimaradt hibaút, homályos megfogalmazás |
+| Publikálás | Hatáslista elkészült; scope-változásnál PO-jóváhagyás | A hatás teljessége |
+| `Vázlat` → `Pontosítva` | Az üzleti igény minden kötelező szakasza kitöltött, a jelenlegi és a kívánt folyamattal; minden állítás forrásjelölt, és nincs `[agentjavaslat]`; nincs megválaszolatlan kérdés; az elhalasztott kérdésnek van felelőse, határideje és feloldási pontja; `[scope]` kérdés nincs elhalasztva; a folyamatelemek azonosítósak; nincs nyitott hotspot; UI-t érintő epicnél a designer reviewja rögzítve; a léptető a konfiguráció szerint jogosult | Ütközés meglévő epickel vagy folyamatmodellel; megalapozatlan feltételezés |
+| `Tervezés alatt` → `Bontva` | A funkcionális specifikáció csak létező folyamatelemekre, közös szabályokra és képernyőverziókra hivatkozik; UI-t érintő epicnél van elfogadott design, egyébként a design-sáv „nem szükséges”; kockázatosnak jelölt felhasználói folyamatnál a használhatósági validáció eredménye rögzítve; a tervezési egyeztetés döntésnapló-bejegyzése megvan; tervmegerősítési kapu zöld; minden storynak van legalább egy taskja és jóváhagyott tesztforgatókönyve | A funkcionális specifikáció és a design egyezése; a storybontás üzleti eredmény szerinti szeletelése; kb. öt flow-lépés fölötti story; üzleti eredmény nélküli backend- vagy frontend-story; hiányzó állapot az átadási csomagban |
 | Tervmegerősítés | Minden task pontosan egy storyhoz tartozik; a függőségi gráf aciklikus; minden tasknak van eszköze, végrehajtási módja és becsült mérete; nincs nyitott spike | AC-lefedettség; ADR- és AGENTS.md-megfelelés; contract-first bontás; migrációs kockázat; PR-méret |
 | Task PR merge | Typecheck, lint, tesztek, build, architektúra- és importhatár-tesztek, UUID-kulcsok, `planning-drift`, `screen-version`, emberi elfogadás | Agentes előreview; PR-méret jelzés (nem blokkol) |
-| `Fejlesztés alatt` → `Tesztelés alatt` | Minden task mergelve; a gyűjtő pipeline-ja zöld; minden érvényes AC-hez és jóváhagyott forgatókönyvhöz van címkézett teszt; nincs gyanús tesztkapcsolat | — |
-| Gyűjtő → `develop` | A `develop` behúzva, a pipeline zöld; az arany tesztadat a story deltájával újraépül; tesztelői és BA-elfogadás | — |
+| `Fejlesztés alatt` → `Tesztelés alatt` | Minden task mergelve; a gyűjtő pipeline-ja zöld; minden automata ellenőrzési módú (e2e, integrációs) érvényes AC-hez és jóváhagyott forgatókönyvhöz van címkézett teszt; nincs gyanús tesztkapcsolat | — |
+| `Tesztelés alatt` → `Fejlesztés alatt` | Sikertelen elfogadás; a talált hibákból javító task készül | — |
+| Gyűjtő → `develop` | A `develop` behúzva, a pipeline zöld; az arany tesztadat a story deltájával újraépül; tesztelői elfogadás a `[kézi]` feltételek rögzített eredményével; UI-t érintő storynál designer-review működést vagy hozzáférhetőséget rontó nyitott eltérés nélkül; BA-elfogadás a vizsgált verzióval, eredménnyel és nyitott hibákkal | — |
+| Epic lezárása | `Kiadva`: legalább egy story kiadva, a többi kiadva vagy jegelve; `Lezárva`: minden story jegelve, PO-döntéssel | — |
 | Release-PR | A kiadandó commit és image staging regressziója zöld; fast-forward lehetséges | — |
 
 ## Branch- és PR-automatizálás
@@ -204,7 +230,8 @@ Az eszközskillek és a generátorok framework-specifikusak, ezért a Trinity re
 2. Agentes előreview (code-review skill); a fejlesztő agent javít.
 3. Review-magyarázat PR-kommentben (review-explain): belépési pontok, flow-k, üzleti hatás, kockázatok, tesztrések, olvasási sorrend, megmaradt észrevételek a kiváltó committal.
 4. Emberi review: a kommentekre kommentenként javító commit készül.
-5. Elfogadás négy szem elve szerint: `agent` módú taskot a story-felelős, `pár` módút másik fejlesztő fogad el.
+5. Elfogadás négy szem elve szerint: `agent` módú taskot a story-felelős, `pár` módút másik fejlesztő fogad el. AC-címkés tesztet tartalmazó PR-t a tesztelő is tartalmilag reviewz: a teszt ténylegesen a hivatkozott elvárást igazolja-e.
+6. A gyanús tesztkapcsolatot a story-felelős zárja le a tesztet módosító vagy átcímkéző PR-ban; a bizonyíték a teszt diffje.
 
 Kockázatalapú automatikus elfogadás nincs; mérési adatok alapján később vezethető be.
 
@@ -214,7 +241,8 @@ Kockázatalapú automatikus elfogadás nincs; mérési adatok alapján később 
 
 - Az e2e-tesztek Playwright-tesztek. Minden teszt címkézi a lefedett AC-azonosítót vagy forgatókönyvet: `@TRN-045#2.2a`.
 - Az integrációs tesztek task-szinten, a task PR részeként készülnek.
-- **Lefedettségi kapu:** a story minden érvényes (nem áthúzott) AC-jéhez és jóváhagyott forgatókönyvéhez legalább egy címkézett teszt tartozik. Módosított vagy visszavont azonosítóra mutató címke gyanús tesztkapcsolat, amely blokkol.
+- **Lefedettségi kapu:** a story minden érvényes (nem áthúzott), automata ellenőrzési módú AC-jéhez és jóváhagyott forgatókönyvéhez legalább egy címkézett teszt tartozik. A `[kézi]` feltételt a tesztelő rögzített eredménye, a `[monitorozás]` feltételt a megnevezett éles mutató igazolja. Módosított vagy visszavont azonosítóra mutató címke gyanús tesztkapcsolat, amely blokkol.
+- **Nyomkövetési nézet:** a harness storynként összeállítja az igény → folyamatelem és közös szabály → AC → forgatókönyv → teszt és eredmény láncot a hivatkozásokból és a címkékből.
 
 ### Tesztkörnyezet (Azure)
 
@@ -265,14 +293,18 @@ Kockázatalapú automatikus elfogadás nincs; mérési adatok alapján később 
 - **Release:**
   1. Az online felületen kért release-re a harness release-PR-t nyit `develop` → `main` irányba. A generált release note tartalmazza a storykat, a képernyőverziókat, a migrációkat és az arany tesztadat verzióját.
   2. A harness rögzíti a kiadandó commitot és image-et, és ezek sikeres staging regressziója mellett a release-PR fast-forward módon mergelődik. A release céljának változásakor az új összeállítás sikeres regressziós eredménye szükséges; korábbi commit zöld eredménye nem használható fel.
-  3. A harness `vX.Y.Z` taget tesz a `main`-re, és a stagingen futott image-et telepíti productionbe; az image nem épül újra.
+  3. A harness `vX.Y.Z` taget tesz a `main`-re, és a stagingen futott image-et telepíti productionbe; az image nem épül újra. Az MVP-ben, az azonos origin bevezetéséig, a webalkalmazás image-e környezetenként a release-commitból épül; a commit azonos, az image nem.
   4. Az érintett storykat `Kiadva` állapotba lépteti.
 - **Hotfix:** `hotfix/<verzió>` a `main`-ből, patch-tag, majd merge a `main`-re és a `develop`-ra.
+
+## Pilotmérés
+
+A pilot mérőszámai a harness eseménynaplójából származnak: az állapotátmenetek és a döntésnapló időbélyegeiből az átfutási és döntési idő, a visszalépésekből, elutasított elfogadásokból és AC-módosításokból az újramunka. A BA- és designer-adminisztráció idejét a pilot alatt a résztvevők rögzítik.
 
 ## Design system szinkron
 
 - **Kód → Claude Design:** a design system kanonikus helye a termékrepó. A `develop`-ra mergelt DS-komponens-változást a DesignSync komponensenként, inkrementálisan szinkronizálja a Claude Design design-system projektjébe.
-- **Claude Design → kód:** a designer exportjából a harness design-PR-t nyit a termékrepóba, amelyet a fejlesztés hagy jóvá. Ha a komponens közben a kódban is változott, a PR ütközést jelez.
+- **Claude Design → kód:** az Átadás fejlesztésre műveletre a harness azonosítót és képernyőverziót képez, csomagol, és design-PR-t nyit a termékrepóba, amelyet a fejlesztés hagy jóvá. Ha a komponens közben a kódban is változott, a PR ütközést jelez. Az export technikai helyességét a harness ellenőrzése és a fejlesztés biztosítja, nem a designer.
 - **Kapu:** DS-komponens változása csak akkor mergelhető, ha a DesignSync renderellenőrzése sikeres.
 - **Design-pillanatkép:** a képernyőkód, a képernyőképek és a `meta.yaml` (képernyőverzió, forráskoncepció, változástípus) a tervezési térben él, és tervezési szinkronnal kerül a termékrepóba.
 

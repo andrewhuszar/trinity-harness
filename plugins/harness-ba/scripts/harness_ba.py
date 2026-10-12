@@ -16,7 +16,7 @@ PLUGIN_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_ROOT = os.path.join(PLUGIN_ROOT, "templates", "planning")
 ROLE = "planning"
 
-EPIC_STATES = ["Vázlat", "Pontosítva", "Tervezés alatt", "Bontva", "Fejlesztés alatt", "Kiadva", "Jegelve"]
+EPIC_STATES = ["Vázlat", "Pontosítva", "Tervezés alatt", "Bontva", "Fejlesztés alatt", "Kiadva", "Lezárva", "Jegelve"]
 STORY_STATES = ["Fejlesztésre kész", "Fejlesztés alatt", "Tesztelés alatt", "Elfogadva", "Kiadva", "Jegelve"]
 
 # Prioritás szerint: a lista elején álló teendő a sürgősebb.
@@ -59,7 +59,12 @@ def next_action(_args):
             "command": "/harness-dev:next",
         }})
 
-    todos, warnings = [], []
+    todos, warnings, blocked = [], [], []
+
+    def collect_blocked(meta, target):
+        if meta.get("blocked_reason"):
+            blocked.append({"target": target, "reason": meta["blocked_reason"], "owner": meta.get("blocked_owner"), "until": meta.get("blocked_until")})
+
     domains = [d for d in core.subdirectories(os.path.join(root, "domains")) if os.path.exists(os.path.join(root, "domains", d, "context.md"))]
     if not domains:
         todos.append((1, {
@@ -72,6 +77,7 @@ def next_action(_args):
     for epic in epics:
         meta = core.front_matter(os.path.join(root, "epics", epic, "epic.md"))
         status = meta.get("status")
+        collect_blocked(meta, f"epics/{epic}")
         if status not in EPIC_STATES:
             warnings.append(f"epics/{epic}/epic.md: ismeretlen vagy hiányzó állapot ({status!r}).")
             continue
@@ -83,7 +89,9 @@ def next_action(_args):
             for name in sorted(os.listdir(stories_dir)):
                 if not name.endswith(".md"):
                     continue
-                story_status = core.front_matter(os.path.join(stories_dir, name)).get("status")
+                story_meta = core.front_matter(os.path.join(stories_dir, name))
+                story_status = story_meta.get("status")
+                collect_blocked(story_meta, f"epics/{epic}/stories/{name}")
                 if story_status not in STORY_STATES:
                     warnings.append(f"epics/{epic}/stories/{name}: ismeretlen vagy hiányzó állapot ({story_status!r}).")
                 elif story_status == "Tesztelés alatt":
@@ -101,12 +109,12 @@ def next_action(_args):
         }))
 
     todos.sort(key=lambda item: item[0])
-    result = {"plugin": plugin, "project": config.get("project"), "warnings": warnings}
+    result = {"plugin": plugin, "project": config.get("project"), "warnings": warnings, "blocked": blocked}
     if todos:
         result["next"] = todos[0][1]
         result["other"] = [item[1] for item in todos[1:]]
     else:
-        result["next"] = {"action": "Nincs BA-teendő", "reason": "Minden epic fejlesztés alatt, kiadva vagy jegelve."}
+        result["next"] = {"action": "Nincs BA-teendő", "reason": "Minden epic fejlesztés alatt, kiadva, lezárva vagy jegelve."}
     core.emit(result)
 
 

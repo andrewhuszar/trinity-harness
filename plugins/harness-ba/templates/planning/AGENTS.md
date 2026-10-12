@@ -28,7 +28,9 @@ status: Vázlat
 ---
 ```
 
-- Epic: `Vázlat`, `Pontosítva`, `Tervezés alatt`, `Bontva`, `Fejlesztés alatt`, `Kiadva`, `Jegelve`.
+- Epic: `Vázlat`, `Pontosítva`, `Tervezés alatt`, `Bontva`, `Fejlesztés alatt`, `Kiadva`, `Lezárva`, `Jegelve`.
+
+Blokkolás esetén a front matter `blocked_reason`, `blocked_owner` és `blocked_until` mezőt kap; ez jelző, nem állapot.
 - Story: `Fejlesztésre kész`, `Fejlesztés alatt`, `Tesztelés alatt`, `Elfogadva`, `Kiadva`, `Jegelve`.
 
 A storyk azonosítója `<PREFIX>-<n>`.

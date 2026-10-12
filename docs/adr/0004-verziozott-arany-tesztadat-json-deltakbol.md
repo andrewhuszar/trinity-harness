@@ -11,6 +11,6 @@ A story-nkénti tesztkörnyezet egy verziózott arany adatbázisból klónoz. Az
 
 ## Következmények
 
-- Ha egy migráció a meglévő tesztadaton elbukik, az a production adaton is elbukna; a hiba a story-gyűjtőbranch merge-kapujánál jelentkezik.
+- Ha egy migráció a meglévő tesztadaton elbukik, a hiba a story-gyűjtőbranch merge-kapujánál jelentkezik. Az arany tesztadaton elért eredmény csak az arany adatlefedettségére ad bizonyítékot; a production adatra vonatkozó migrációs kockázatot külön kell értékelni.
 - Ha a `develop` a story tesztelése után változott, a merge előtt az aranyat újra kell építeni, és a story deltáját újra kell játszani.
 - Ütközéskor a story merge-kapuja a kézi feloldás és a frissített delta sikeres ellenőrzéséig blokkol.

@@ -73,6 +73,13 @@ Egy epic Process Level event storming eredménye: szereplők, commandok, policy-
 **Folyamatelem**:
 A folyamatmodell egy stabil azonosítójú eleme, amelyre a funkcionális specifikáció, az elfogadási feltételek és a technikai specifikáció hivatkoznak.
 
+**Közös szabály**:
+Domain szinten, stabil azonosítóval rögzített jogosultsági szabály, adatfogalom vagy külső rendszerkapcsolat, amelyre a storyk hivatkoznak.
+
+**Minőségi elvárás**:
+Az epicre érvényes, mérhető teljesítmény-, hozzáférhetőségi vagy üzemeltetési elvárás stabil azonosítóval.
+_Kerülendő_: NFR (önálló fogalomként)
+
 **Funkcionális specifikáció**:
 Egy epic üzleti működésének részletes leírása, amely a végleges designnal egyezik, és amelyből a storyk elfogadási feltételei származnak.
 _Kerülendő_: üzleti spec, spec (önmagában)
@@ -110,7 +117,16 @@ _Kerülendő_: verzió (önmagában)
 Egy képernyő elfogadott, monoton növekvő verziója a design-pillanatképben (például `SCR-12@3`), amely rögzíti, melyik koncepcióverzióból született.
 
 **Megjelenítési pontosítás**:
-Képernyőverzió-emelés, amely csak vizuális eltérést hoz, funkcionális specifikációt és elfogadási feltételt nem érint; nem blokkol, de a view-ban át kell vezetni.
+Képernyőverzió-emelés, amely csak vizuális eltérést hoz, funkcionális specifikációt és elfogadási feltételt nem érint; nem blokkol, de a view-ban át kell vezetni. Használhatósági vagy akadálymentességi hatás esetén a designer és a BA jóváhagyását igényli.
+
+**Átadás fejlesztésre**:
+A designer művelete, amellyel egy elfogadott koncepciót kiad; az azonosítást, a képernyőverzió képzését, a csomagolást és a PR előkészítését az eszköz végzi.
+
+**Átadási csomag**:
+Az átadott képernyő kódja a flow szempontjából releváns állapotokkal és interakciókkal (betöltés, üres, hiba, siker, jogosultság, hosszú tartalom, reszponzivitás, fókusz és billentyűzet).
+
+**Használhatósági validáció**:
+A képernyőverzió elfogadása előtti, a bizonytalansággal arányos ellenőrzés célfelhasználókkal; új vagy kockázatosnak jelölt felhasználói folyamatnál kötelező.
 
 **Viselkedési változás**:
 Képernyőverzió-emelés, amely új adatot, interakciót, állapotot vagy folyamatot hoz; tervezési eltérésnek minősül.
@@ -168,7 +184,25 @@ Struktúra, kötelező mezők, hivatkozások és azonosítók gépi ellenőrzés
 A feldolgozó agent észrevétele szótár-ütközésről, ellentmondásról vagy kimaradt hibaútról; a BA indoklással elutasíthatja, és az elutasítás rögzítésre kerül.
 
 **Elhalasztott kérdés**:
-Nyitott kérdés, amelyet felelőssel és határidővel kifejezetten későbbre tesznek; nem blokkolja a pontosítás lezárását.
+Nyitott kérdés, amelyet felelőssel, határidővel és feloldási ponttal (az az átmenet, amely előtt meg kell válaszolni) kifejezetten későbbre tesznek; nem blokkolja a pontosítás lezárását. A scope-ot vagy megvalósíthatóságot eldöntő kérdés nem halasztható.
+
+**Forrásjelölés**:
+Az üzleti igény egy állításának eredetjelölése: megerősített (megnevezett forrással), feltételezés vagy agentjavaslat.
+
+**Döntésnapló**:
+Az epic döntéseinek nyilvántartása döntéshozóval, érintett verzióval, indokkal és fennmaradó kockázattal.
+
+**Hatáslista**:
+A feldolgozó agent publikálás előtti összesítése az érintett storykról, közös szabályokról, képernyőkről, tesztekről és a prioritásra gyakorolt hatásról.
+
+**Tervezési egyeztetés**:
+A bontás előtti közös lépés, amelyben a BA, a designer és a story-felelős ugyanazon a flow-n és verziókon ellenőrzi a három tervezési sáv összhangját.
+
+**Ellenőrzési mód**:
+Az elfogadási feltétel igazolásának módja: alapértelmezés szerint e2e-teszt, egyébként integrációs teszt, kézi ellenőrzés vagy éles monitorozás.
+
+**Blokkolva jelző**:
+Az epic, story vagy task bármely állapotában beállítható jelzés okkal, felelőssel és várt feloldással; nem állapot.
 
 ### Branchek és PR-ok
 
@@ -264,8 +298,8 @@ Egy epic, story vagy task életciklus-pozíciója a fejlesztési állapottal egy
 
 ### Állapotok
 
-- **Epic**: `Vázlat` → `Pontosítva` (üzleti igény és folyamatmodell elfogadva) → `Tervezés alatt` (funkcionális specifikáció, design és technikai specifikáció párhuzamos sávjai) → `Bontva` (storyk és taskok létrehozva) → `Fejlesztés alatt` → `Kiadva`; bármikor `Jegelve`.
-- **Story**: `Fejlesztésre kész` → `Fejlesztés alatt` → `Tesztelés alatt` (minden task mergelve a gyűjtőbe, a pipeline zöld; a tesztkörnyezetben tesztelő és BA dolgozik) → `Elfogadva` (a gyűjtő mergelve a `develop`-ra) → `Kiadva`; a `Kiadva` kivételével bármikor `Jegelve`.
+- **Epic**: `Vázlat` → `Pontosítva` (üzleti igény és folyamatmodell elfogadva) → `Tervezés alatt` (funkcionális specifikáció, design és technikai specifikáció párhuzamos sávjai) → `Bontva` (tervezési egyeztetés után storyk és taskok létrehozva) → `Fejlesztés alatt` → `Kiadva` (legalább egy story kiadva) vagy `Lezárva` (minden story jegelve); bármikor `Jegelve`.
+- **Story**: `Fejlesztésre kész` → `Fejlesztés alatt` (az első task indulásától) → `Tesztelés alatt` (minden task mergelve a gyűjtőbe, a pipeline zöld; a tesztkörnyezetben tesztelő, designer és BA dolgozik) → `Elfogadva` (a gyűjtő mergelve a `develop`-ra) → `Kiadva`; sikertelen elfogadáskor vissza `Fejlesztés alatt` állapotba javító taskkal; a `Kiadva` kivételével bármikor `Jegelve`.
 - **Task**: `Tervezve` → `Fejlesztés alatt` → `Elfogadásra vár` (task PR review alatt) → `Mergelve`.
 
 ### Szereplők
@@ -282,8 +316,18 @@ A story emberi fejlesztő felelőse, aki a technikai döntéseket hozza és a ta
 **Fejlesztő agent**:
 Egy taskot a task branchén megvalósító agent, amely kódot és tesztet ír, lefuttatja a minőségkapukat, PR-t nyit és a review-kommentekre reagál.
 
+**Product owner**:
+A prioritásról, a scope-változásról, az üzleti szabályról és a release-ről döntő szereplő; feloldja a tervezési sávok közötti ellentmondást, és alapértelmezés szerint az epic bevezetési felelőse.
+_Kerülendő_: üzlet (döntéshozóként)
+
 **BA**:
-Üzleti elemző vagy üzleti szereplő, aki a tervezési térben a Claude projekten keresztül dolgozik, és soha nem végez közvetlen git-műveletet.
+Üzleti elemző, aki az igényt elemzi és előkészíti, a storyt elfogadja, más jóváhagyást csak a PO delegációjával ad; a tervezési térben a Claude projekten keresztül dolgozik, és soha nem végez közvetlen git-műveletet.
+
+**Delegáció**:
+A PO epicenként rögzített felhatalmazása, amellyel egy BA adott döntéseket hozhat; a harness-konfiguráció tárolja.
+
+**Bevezetési felelős**:
+Az epic üzleti bevezetéséért (tájékoztatás, oktatás, támogatás felkészítése) felelős szereplő, alapértelmezés szerint a PO.
 
 **Beküldő agent**:
 A BA gépén futó agent, amely a BA változását a tervezési térbe juttatja és commitolja.
@@ -333,7 +377,9 @@ Online alkalmazás, ahol a BA a beküldött változás eredményét látja, kér
 - Az **AC-azonosító** nem számozódik át és nem használható újra; az azonosító explicit szöveges címke, nem markdown-listaszám.
 - Beszúrt feltétel az előző elem utáni `-xN` azonosítót kapja; módosításkor az eredeti szöveg áthúzva, dátummal megmarad, az új változat a következő betűt kapja; visszavont feltétel áthúzva, `Visszavonva <dátum>` jelöléssel marad.
 - Módosítás vagy visszavonás után a régi azonosítóra mutató teszt **gyanús tesztkapcsolat**.
-- Egy story legfeljebb kb. öt **flow-lépést** tartalmaz; ennél nagyobb storyt a bontáskor tovább kell szedni.
+- A storyszeletelés szempontja az önállóan ellenőrizhető üzleti eredmény, a kockázat és a függőség; kb. öt **flow-lépés** fölött a feldolgozó agent jelez, de nem utasít el.
+- A story **közös szabályokra** és **minőségi elvárásokra** hivatkozik, nem másolja őket.
+- Agent nem fogadhatja el az agent által generált tartalmat emberi felülvizsgálat nélkül; minden elutasított javaslat és lezárt hotspot a **döntésnaplóba** kerül.
 - Minden **elfogadási feltételhez** és jóváhagyott **tesztforgatókönyvhöz** címkézett automata teszt tartozik; enélkül a story nem léphet `Tesztelés alatt` állapotba.
 - **Hotspotot** AI is nyithat, de csak ember zárhatja le.
 - A Software Design Level event storming eredménye az **architektúraterv** része, nem a tervezési téré.
@@ -345,6 +391,8 @@ Online alkalmazás, ahol a BA a beküldött változás eredményét látja, kér
 - A **release** regressziós eredménye a kiadandó összeállításra érvényes; korábbi összeállítás sikeres ellenőrzése nem helyettesíti ezt.
 
 ## Kétértelműségek
+
+- A „BA, üzlet” összevont szerep két fogalom: a **BA** elemez és előkészít, a **product owner** dönt.
 
 - A „projekt” egyszerre jelölte a tervezési teret, a termékrepót és a Claude Desktop projektet; ezek külön fogalmak.
 - A „business repó” a **tervezési tér**, a „codebase repó” a **termékrepó**.

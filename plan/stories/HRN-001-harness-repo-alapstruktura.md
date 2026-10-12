@@ -18,4 +18,8 @@ A harness saját repóban, a Trinity frameworktől és a prototípusoktól elkü
 - [x] A harness repó létrehozása és a dokumentáció átköltöztetése a Trinity repóból.
 - [x] A két üres prototípus repó létrehozása helyben.
 - [x] A GitHub-repók létrehozása és a remote-ok beállítása.
-- [ ] A specifikáció véleményezése és az észrevételek átvezetése.
+- [x] A specifikáció véleményezése és az észrevételek átvezetése.
+
+## Ellenőrzés
+
+- A Senior BA (BA-01–BA-13) és a designer (DS-01–DS-08) 21 észrevétele elbírálva és átvezetve az üzleti és a technikai specifikációba, a `CONTEXT.md`-be és az ADR 0004-be. Döntések: a PO dönt, a BA delegációval hagy jóvá; minden AC-szövegváltozás új betűt kap, tiszta nézettel; visszalépés, `Blokkolva` jelző és `Lezárva` epicállapot.
